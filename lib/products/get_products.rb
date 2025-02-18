@@ -36,6 +36,43 @@ module Products
         products
       end
 
+      def get_by_product_name(
+        order_by: default_order_by, 
+        order: default_order, 
+        pagination: true, 
+        page: default_page, 
+        per_page: default_limit,
+        search_by:
+      )
+
+        if pagination
+          products = Product.where("title LIKE ?", "%#{search_by}%").order(order_by => order).page(page).per(per_page)
+        else
+          products = Product.where("title LIKE ?", "%#{search_by}%").order(order_by => order)
+        end 
+
+        products
+      end
+
+      def get_by_product_name_and_category(
+        order_by: default_order_by, 
+        order: default_order, 
+        pagination: true, 
+        page: default_page, 
+        per_page: default_limit,
+        search_by:,
+        category:
+      )
+
+        if pagination
+          products = category.products.where("title LIKE ?", "%#{search_by}%").order(order_by => order).page(page).per(per_page)
+        else
+          products = category.products.where("title LIKE ?", "%#{search_by}%").order(order_by => order)
+        end 
+
+        products
+      end
+
       def default_order_by
         'id'
       end
