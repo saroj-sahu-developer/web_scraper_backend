@@ -36,6 +36,22 @@ module Api
       end
 
       def index
+        if params[:category_id]
+          data = ::Products::GetProducts.get_by_category(
+                                            order_by: order_by, 
+                                            order: order, 
+                                            pagination: paginate?, 
+                                            page: page, 
+                                            per_page: per_page,
+                                            category: category
+                                          )
+          
+          render json: {
+                        data: data
+                      }, status: :ok
+          return
+        end
+
         data = ::Products::GetProducts.get(
                                             order_by: order_by, 
                                             order: order, 
