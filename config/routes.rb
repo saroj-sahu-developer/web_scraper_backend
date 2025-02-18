@@ -12,6 +12,10 @@ Rails.application.routes.draw do
       resources :products, only: [:index, :show] do
         post :scrape, on: :collection
       end
+
+      resources :categories, only: [:index] do
+        resources :products, only: [:index]
+      end
     end
   end
   
