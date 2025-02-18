@@ -79,6 +79,12 @@ module Api
         }, status: :ok
       end
 
+      def show
+        render json: {
+          data: product
+        }, status: :ok
+      end
+
       private
 
       def url
@@ -97,10 +103,10 @@ module Api
 
       def order
         order = params['order'].to_s.downcase
-        if order == 'desc'
+        if order == 'asc'
           order
         else
-          'asc'
+          'desc'
         end
       end
 
@@ -131,6 +137,10 @@ module Api
 
       def search_by
         params[:search_by].to_s
+      end
+
+      def product
+        @_product = Product.find(params[:id])
       end
     end
   end
