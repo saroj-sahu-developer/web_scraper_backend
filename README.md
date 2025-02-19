@@ -1,24 +1,11 @@
-# README
+# To run the project
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Assuming that you have installed Ruby, Rails
+The used database is sqlite. If you want to change, please update in database.yml
 
-Things you may want to cover:
-
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+* open the terminal
+* clone from git repo (git clone https://github.com/saroj-sahu-developer/web_scraper_backend)
+* open terminal in the project directory  (cd web_scraper_backend/)
+* bundle install
+* rails db:migrate
+* rails s
