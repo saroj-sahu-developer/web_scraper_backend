@@ -10,6 +10,21 @@ module Api
           return
         end
 
+        if existing_product
+          # If product already fetched from this url, instaed of creating a new record, update the existing product
+          if existing_product.update(product_params(product_data))
+            render json: {
+              data: existing_product
+            }, status: :ok
+          else
+            Rails.logger.error("Error: #{existing_product.errors.full_messages}")
+            render json: {
+              error: "Some error occured" 
+            }, status: :bad_gateway
+          end
+          return
+        end
+
         product = Product.new(product_params(product_data))
 
         begin
@@ -19,16 +34,27 @@ module Api
           
           product.category = category
         rescue => e
-          puts "Error: #{e.message}"
+          Rails.logger.error("Error: #{e.message}")
           # If category is not saved & assigned to product, then also product can be saved without category
         end
 
-        if product.save
+        success = false
+        begin
+          ActiveRecord::Base.transaction do
+            product.save!
+            ProductUrl.create!(url: url, product_id: product.id)
+            success = true
+          end
+        rescue ActiveRecord::RecordInvalid => e
+          Rails.logger.error("Transaction failed: #{e.message}")
+        end        
+
+        if success
           render json: {
             data: product
           }, status: :ok
         else
-          puts product.errors.full_messages
+          Rails.logger.error("Error: #{product.errors.full_messages}")
           render json: {
             error: "Some error occured" 
           }, status: :bad_gateway
@@ -88,7 +114,7 @@ module Api
       private
 
       def url
-        params[:url]
+        @_url ||= params[:url].to_s.strip
       end
 
       def product_params(product_data)
@@ -141,6 +167,13 @@ module Api
 
       def product
         @_product = Product.find(params[:id])
+      end
+
+      def existing_product
+        @_existing_product ||= begin
+          product_url = ProductUrl.find_by(url: url)
+          product_url&.product
+        end
       end
     end
   end
