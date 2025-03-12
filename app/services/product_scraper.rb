@@ -32,7 +32,8 @@ class ProductScraper
       price: parsed_page.css('div.Nx9bqj')&.text&.strip,
       image_url: parsed_page.at_css('div.gqcSqV.YGE0gZ img._53J4C-')&.[]('src'),
       description: fetch_description(parsed_page),
-      category: fetch_category(parsed_page)
+      category: fetch_category(parsed_page),
+      size: parsed_page.css('.CDDksN.zmLe5G.dpZEpc').map(&:text)
     }
   end
 

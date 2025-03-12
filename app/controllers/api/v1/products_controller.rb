@@ -1,3 +1,4 @@
+require 'uri'
 module Api
   module V1
     class ProductsController < ApplicationController
@@ -114,7 +115,10 @@ module Api
       private
 
       def url
-        @_url ||= params[:url].to_s.strip
+        url = params[:url].to_s.strip
+        uri = URI.parse(url)
+        clean_url = "#{uri.scheme}://#{uri.host}#{uri.path}"
+        clean_url
       end
 
       def product_params(product_data)
